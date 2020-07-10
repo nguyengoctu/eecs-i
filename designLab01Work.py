@@ -43,27 +43,74 @@ class V2:
                   factor * self.y)
 
     def __add__(self, other):
-        return V2(self.getX() + other.getX(),
-                  self.getY() + other.getY())
+        return self.add(other)
 
     def __mul__(self, other):
-        return V2(self.getX() * other,
-                  self.getY() * other)
+        return self.mul(other)
 
 
 # -----------------------------------------------------------------------------
 
 
 class Polynomial:
-    # Delete the pass statement below and insert your own code
-    pass
+    def __init__(self, coefficients):
+        self.coeffs = coefficients
+
+    def coeff(self, i):
+        """
+        :param i:
+        :return: return the coefficient of the x^i term of the polynomial
+        """
+        return self.coeffs[len(self.coeffs) - i - 1]
+
+    def add(self, other):
+        """
+        :param other:
+        :return: a new Polynomial representing the sum of Polynomials self and other
+        """
+        if len(self.coeffs) > len(other.coeffs):
+            lower_order_coeffs = other.coeffs
+            new_coeffs = self.coeffs.copy()
+        else:
+            lower_order_coeffs = self.coeffs
+            new_coeffs = other.coeffs.copy()
+
+        i = len(new_coeffs) - 1
+        j = len(lower_order_coeffs) - 1
+        while j >= 0:
+            new_coeffs[i] += lower_order_coeffs[j]
+            i -= 1
+            j -= 1
+        return Polynomial(new_coeffs)
+
+    def __add__(self, other):
+        return self.add(other)
+
+    def mul(self, other):
+        """
+
+        :param other:
+        :return: a new Polynomial representing the product of Polynomials self and other
+        """
+        pass
+
+    def __str__(self):
+        s = ''
+        for i in range(len(self.coeffs)):
+            order = len(self.coeffs) - i - 1
+            if self.coeffs[i] != 0:
+                s += str(self.coeffs[i])
+                if order >= 2:
+                    s += ' z**' + str(order)
+                elif order == 1:
+                    s += ' z'
+                if order > 0:
+                    s += ' + '
+        return s
 
 
-a = V2(1.0, 2.0)
-b = V2(2.2, 3.3)
-print(a.add(b))
-print(a + b)
-print(a.mul(2))
-print(a * 2)
-print(a.add(b).mul(-1))
-print((a + b) * -1)
+p1 = Polynomial([1, 0, 3])
+p2 = Polynomial([100, 200])
+print(p1)
+print(p1.add(p2))
+print(p1 + p2)
