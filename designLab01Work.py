@@ -9,8 +9,12 @@
 
 
 def fib(n):
-    # Delete the pass statement below and insert your own code
-    pass
+    result = 1
+    if n < 1:
+        return result
+    for i in range(2, n + 1):
+        result *= i
+    return result
 
 
 # -----------------------------------------------------------------------------
@@ -27,3 +31,8 @@ class V2:
 class Polynomial:
     # Delete the pass statement below and insert your own code
     pass
+
+
+print fib(0)
+print fib(5)
+print fib(10)
