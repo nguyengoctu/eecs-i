@@ -88,11 +88,18 @@ class Polynomial:
 
     def mul(self, other):
         """
-
         :param other:
         :return: a new Polynomial representing the product of Polynomials self and other
         """
-        pass
+        new_len = len(self.coeffs) + len(other.coeffs) - 1
+        new_coeffs = [0] * new_len
+        for i in range(len(self.coeffs)):
+            for j in range(len(other.coeffs)):
+                new_coeffs[i + j] += self.coeffs[i] * other.coeffs[j]
+        return Polynomial(new_coeffs)
+
+    def __mul__(self, other):
+        return self.mul(other)
 
     def __str__(self):
         s = ''
@@ -114,3 +121,4 @@ p2 = Polynomial([100, 200])
 print(p1)
 print(p1.add(p2))
 print(p1 + p2)
+print(p1 * p2)
