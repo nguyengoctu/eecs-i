@@ -6,6 +6,8 @@
 # Below are templates for your answers to three parts of Design Lab 1
 
 # -----------------------------------------------------------------------------
+from cmath import sqrt
+import unittest
 
 
 def fib(n):
@@ -115,10 +117,66 @@ class Polynomial:
                     s += ' + '
         return s
 
+    def val(self, v):
+        """
+        :param v:
+        :return: the numerical result of evaluating the polynomial when x equals v
+        """
+        result = 0
+        for i in range(len(self.coeffs)):
+            order = len(self.coeffs) - i - 1
+            result += self.coeffs[i] * v ** order
+        return result
 
-p1 = Polynomial([1, 0, 3])
-p2 = Polynomial([100, 200])
+    def __call__(self, x):
+        return self.val(x)
+
+    def roots(self):
+        """
+        :return: a list containing the roots of first or second order polynomial
+        """
+        roots = []
+        if len(self.coeffs) >= 4 or len(self.coeffs) <= 1:
+            return "Impossible to handle this polynomial!"
+
+        if len(self.coeffs) == 2:
+            if self.coeffs[0] == 0:
+                roots = ["Infinity"]
+            else:
+                roots = [(-1 * self.coeffs[1] / self.coeffs[0])]
+            return roots
+
+        a = self.coeffs[0]
+        b = self.coeffs[1]
+        c = self.coeffs[2]
+
+        if a == 0:
+            if b == 0:
+                roots = ["Infinity"]
+            else:
+                roots = [-c / b]
+        else:
+            delta = b * b - 4 * a * c
+            if delta != 0:
+                roots = [(-b + sqrt(delta)) / (2 * a), (-b - sqrt(delta)) / (2 * a)]
+            elif delta == 0:
+                roots = [-b / (2 * a)]
+        return roots
+
+
+p1 = Polynomial([1, 2, 3])
 print(p1)
+p2 = Polynomial([100, 200])
 print(p1.add(p2))
 print(p1 + p2)
-print(p1 * p2)
+print(p1(1))
+print(p1(-1))
+print((p1 + p2)(10))
+print(p1.mul(p1))
+print(p1 * p1)
+print(p1 * p2 + p1)
+print(p1.roots())
+print(p2.roots())
+p3 = Polynomial([3, 2, -1])
+print(p3.roots())
+print((p1 * p1).roots())
