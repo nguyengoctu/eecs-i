@@ -72,10 +72,10 @@ class Polynomial:
         """
         if len(self.coeffs) > len(other.coeffs):
             lower_order_coeffs = other.coeffs
-            new_coeffs = self.coeffs.copy()
+            new_coeffs = self.coeffs[:]
         else:
             lower_order_coeffs = self.coeffs
-            new_coeffs = other.coeffs.copy()
+            new_coeffs = other.coeffs[:]
 
         i = len(new_coeffs) - 1
         j = len(lower_order_coeffs) - 1
