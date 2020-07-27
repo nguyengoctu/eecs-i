@@ -60,9 +60,6 @@ def f(x):  # func
 class CommentsSM(SM):
     startState = [[], False]  # fix this
 
-    def __init__(self):
-        self.state = self.startState
-
     def getNextValues(self, state, inp):
         # your code here
         stateCopy = state[:]
@@ -100,7 +97,7 @@ def runTestsComm():
 # s = '''def f(x): # comment
 # return 1'''
 # print m.transduce(s)
-runTestsComm()
+# runTestsComm()
 #Test1: ['#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
 #Test2: ['#', 'i', 'n', 'i', 't', 'i', 'a', 'l', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't', '#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
 #Test3: ['#', 'i', 'n', 'i', 't', 'i', 'a', 'l', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't', '#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
@@ -133,7 +130,34 @@ test3  = '''
 
 class FirstWordSM(sm.SM):
     # Your code here
-    pass
+    startState = [[], True, False] # output, looking for letter, is adding first word
+
+    def getNextValues(self, state, inp):
+        stateCopy = state[:]
+        if inp == '\n':
+            stateCopy[0].append(None)
+            stateCopy[1] = True
+            stateCopy[2] = False
+            return stateCopy, None
+
+        if not stateCopy[1]:
+            stateCopy[0].append(None)
+            return stateCopy, None
+
+        if inp == ' ' and stateCopy[2] == False:
+            stateCopy[0].append(None)
+            return stateCopy, None
+
+        if inp == ' ' and stateCopy[2] == True:
+            stateCopy[0].append(None)
+            stateCopy[1] = False
+            return stateCopy, None
+
+        stateCopy[0].append(inp)
+        stateCopy[2] = True
+        return stateCopy, inp
+
+
 
 def runTestsFW():
     m = FirstWordSM()
@@ -145,6 +169,7 @@ def runTestsFW():
     [m.getNextValues(m.state, i) for i in '\nFoo ']
     print 'Test 4', [m.step(i) for i in test1]
 
+runTestsFW()
 # execute runTestsFW() to carry out the testing, you should get:
 #Test1: ['h', 'i', None, 'h', 'o']
 #Test2: [None, None, 'h', 'i', None, 'h', 'o']
