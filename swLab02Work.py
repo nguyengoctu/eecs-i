@@ -3,13 +3,26 @@ import lib601.sm as sm
 ##################################
 # Double Delay SM
 ##################################
+class SM:
+    def start(self):
+        self.state = self.startState
+
+    def step(self, inp):
+        (s, o) = self.getNextValues(self.state, inp)
+        self.state = s
+        return o
+
+    def transduce(self, inputs):
+        self.start()
+        return [self.step(inp) for inp in inputs]
+
 
 class Delay2Machine(sm.SM):
     def __init__(self, val0, val1):
-        self.startState = ''   # fix this
-        pass
+        self.startState = [val0, val1]   # fix this
+
     def getNextValues(self, state, inp):
-        pass
+        return [state[1], inp], state[0]
 
 
 def runTestsDelay():
@@ -44,12 +57,31 @@ def f(x):  # func
      return 'foo' '''
 
 
-class CommentsSM(sm.SM):
-    startState = ''  # fix this
+class CommentsSM(SM):
+    startState = [[], False]  # fix this
+
+    def __init__(self):
+        self.state = self.startState
 
     def getNextValues(self, state, inp):
         # your code here
-        pass
+        stateCopy = state[:]
+        if inp == '\n':
+            stateCopy[0].append(None)
+            stateCopy[1] = False
+            return stateCopy, None
+
+        if stateCopy[1] == True:
+            stateCopy[0].append(inp)
+            return stateCopy, inp
+
+        if inp == '#' and stateCopy[1] == False:
+            stateCopy[0].append(inp)
+            stateCopy[1] = True
+            return stateCopy, inp
+
+        stateCopy[0].append(None)
+        return stateCopy, None
  
 
 def runTestsComm():
@@ -64,7 +96,11 @@ def runTestsComm():
     print 'Test3:', [c for c in [m.step(i) for i in x2] if not c==None]
 
 # execute runTestsComm() to carry out the testing, you should get:
-
+# m = CommentsSM()
+# s = '''def f(x): # comment
+# return 1'''
+# print m.transduce(s)
+runTestsComm()
 #Test1: ['#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
 #Test2: ['#', 'i', 'n', 'i', 't', 'i', 'a', 'l', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't', '#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
 #Test3: ['#', 'i', 'n', 'i', 't', 'i', 'a', 'l', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't', '#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
