@@ -123,32 +123,22 @@ test3  = '''
 
 class FirstWordSM(sm.SM):
     # Your code here
-    startState = [[], True, False] # output, looking for letter, is adding first word
+    startState = [True, False] # looking for letter, is adding first word
 
     def getNextValues(self, state, inp):
-        stateCopy = state[:]
         if inp == '\n':
-            stateCopy[0].append(None)
-            stateCopy[1] = True
-            stateCopy[2] = False
-            return stateCopy, None
+            return [True, False], None
 
-        if not stateCopy[1]:
-            stateCopy[0].append(None)
-            return stateCopy, None
+        if not state[0]:
+            return state, None
 
-        if inp == ' ' and stateCopy[2] == False:
-            stateCopy[0].append(None)
-            return stateCopy, None
+        if inp == ' ' and state[1] == False:
+            return state, None
 
-        if inp == ' ' and stateCopy[2] == True:
-            stateCopy[0].append(None)
-            stateCopy[1] = False
-            return stateCopy, None
+        if inp == ' ' and state[1] == True:
+            return [False, state[1]], None
 
-        stateCopy[0].append(inp)
-        stateCopy[2] = True
-        return stateCopy, inp
+        return [state[0], True], inp
 
 
 
@@ -162,7 +152,7 @@ def runTestsFW():
     [m.getNextValues(m.state, i) for i in '\nFoo ']
     print 'Test 4', [m.step(i) for i in test1]
 
-# runTestsFW()
+runTestsFW()
 # execute runTestsFW() to carry out the testing, you should get:
 #Test1: ['h', 'i', None, 'h', 'o']
 #Test2: [None, None, 'h', 'i', None, 'h', 'o']
