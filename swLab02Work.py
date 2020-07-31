@@ -58,27 +58,20 @@ def f(x):  # func
 
 
 class CommentsSM(SM):
-    startState = [[], False]  # fix this
+    startState = False  # fix this
 
     def getNextValues(self, state, inp):
         # your code here
-        stateCopy = state[:]
         if inp == '\n':
-            stateCopy[0].append(None)
-            stateCopy[1] = False
-            return stateCopy, None
+            return False, None
 
-        if stateCopy[1] == True:
-            stateCopy[0].append(inp)
-            return stateCopy, inp
+        if state:
+            return state, inp
 
-        if inp == '#' and stateCopy[1] == False:
-            stateCopy[0].append(inp)
-            stateCopy[1] = True
-            return stateCopy, inp
+        if inp == '#' and state == False:
+            return True, inp
 
-        stateCopy[0].append(None)
-        return stateCopy, None
+        return state, None
  
 
 def runTestsComm():
@@ -97,7 +90,7 @@ def runTestsComm():
 # s = '''def f(x): # comment
 # return 1'''
 # print m.transduce(s)
-# runTestsComm()
+runTestsComm()
 #Test1: ['#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
 #Test2: ['#', 'i', 'n', 'i', 't', 'i', 'a', 'l', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't', '#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
 #Test3: ['#', 'i', 'n', 'i', 't', 'i', 'a', 'l', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't', '#', ' ', 'f', 'u', 'n', 'c', '#', ' ', 't', 'e', 's', 't', '#', ' ', 'c', 'o', 'm', 'm', 'e', 'n', 't']
@@ -169,7 +162,7 @@ def runTestsFW():
     [m.getNextValues(m.state, i) for i in '\nFoo ']
     print 'Test 4', [m.step(i) for i in test1]
 
-runTestsFW()
+# runTestsFW()
 # execute runTestsFW() to carry out the testing, you should get:
 #Test1: ['h', 'i', None, 'h', 'o']
 #Test2: [None, None, 'h', 'i', None, 'h', 'o']
