@@ -43,13 +43,49 @@ class Variable:
         return 'Var('+self.name+')'
     __repr__ = __str__
 
+class SM:
+    def start(self):
+        self.state = self.startState
+
+    def step(self, inp):
+        (s, o) = self.getNextValues(self.state, inp)
+        self.state = s
+        return o
+
+    def transduce(self, inputs):
+        self.start()
+        return [self.step(inp) for inp in inputs]
+
+class Tokenizer(SM):
+    startState = ''
+
+    def getNextValues(self, state, inp):
+        if inp in seps:
+            if len(state) > 0:
+                return '', [state, inp]
+            else:
+                return '', [inp]
+
+        if inp == ' ':
+            if len(state) > 0:
+                return '', [state]
+            else:
+                return '', []
+
+        return state + inp, []
+
 # characters that are single-character tokens
 seps = ['(', ')', '+', '-', '*', '/', '=']
 
 # Convert strings into a list of tokens (strings)
 def tokenize(string):
     # <your code here>
-    pass
+    tokenList = []
+    tokenizer = Tokenizer()
+    for c in tokenizer.transduce(string):
+        tokenList = tokenList + c
+    tokenList += [tokenizer.state]
+    return tokenList
 
 # tokens is a list of tokens
 # returns a syntax tree:  an instance of {\tt Number}, {\tt Variable},
@@ -107,9 +143,10 @@ def calcTest(exprs):
 ['(', 'fred', '+', 'george', ')']
 ['(', 'hi', '*', 'ho', ')']
 ['(', 'fred', '+', 'george', ')']
+
 '''
 def testTokenize():
-    print tokenize('fred ')
+    print tokenize('fred')
     print tokenize('777 ')
     print tokenize('777 hi 33 ')
     print tokenize('**-)(')
@@ -117,7 +154,9 @@ def testTokenize():
     print tokenize('(fred + george)')
     print tokenize('(hi*ho)')
     print tokenize('( fred+george )')
+    print tokenize('8')
 
+testTokenize()
 
 # Simple parsing tests from the handout
 '''Answers are:
